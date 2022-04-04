@@ -1,0 +1,30 @@
+pkgname=surf
+pkgver=2.1
+pkgrel=1
+pkgdesc='A WebKit based browser'
+arch=('i686' 'x86_64')
+url='http://surf.suckless.org/'
+license=('custom:MIT/X')
+depends=('webkit2gtk' 'gcr' 'xorg-xprop')
+makedepends=('git')
+source=("$pkgname::git+https://git.suckless.org/$pkgname#commit=11dca18a2d148e5a6463aba783567a3815424963"
+        'bmark.patch'
+        'styles.patch')
+md5sums=('SKIP' 'SKIP' 'SKIP')
+
+prepare() {
+  cd "$srcdir/$pkgname"
+  patch -Np1 < "$srcdir/bmark.patch"
+  patch -Np1 < "$srcdir/styles.patch"
+}
+
+build() {
+  cd "$srcdir/$pkgname"
+  make PREFIX=/usr DESTDIR="$pkgdir"
+}
+
+package() {
+  cd "$srcdir/$pkgname"
+  make PREFIX=/usr DESTDIR="$pkgdir" install
+  install -m644 -D LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

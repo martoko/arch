@@ -1,0 +1,47 @@
+ config.def.h | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index 1355ba3..ad0993b 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -69,8 +69,8 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
+         .v = (const char *[]){ "/bin/sh", "-c", \
+              "prop=\"$(printf '%b' \"$(xprop -id $1 "r" " \
+              "| sed -e 's/^"r"(UTF8_STRING) = \"\\(.*\\)\"/\\1/' " \
+-             "      -e 's/\\\\\\(.\\)/\\1/g')\" " \
+-             "| dmenu -p '"p"' -w $1)\" " \
++             "      -e 's/\\\\\\(.\\)/\\1/g' && cat ~/.surf/bookmarks.txt)\" " \
++             "| dmenu -l 10 -p '"p"' -w $1)\" " \
+              "&& xprop -id $1 -f "s" 8u -set "s" \"$prop\"", \
+              "surf-setprop", winid, NULL \
+         } \
+@@ -102,6 +102,17 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
+         } \
+ }
+ 
++/* BM_ADD(readprop) */
++#define BM_ADD(r) {\
++        .v = (const char *[]){ "/bin/sh", "-c", \
++             "(echo $(xprop -id $0 $1) | cut -d '\"' -f2 " \
++             "| sed 's/.*https*:\\/\\/\\(www\\.\\)\\?//' && cat ~/.surf/bookmarks.txt) " \
++             "| awk '!seen[$0]++' > ~/.surf/bookmarks.tmp && " \
++             "mv ~/.surf/bookmarks.tmp ~/.surf/bookmarks.txt", \
++             winid, r, NULL \
++        } \
++}
++
+ /* styles */
+ /*
+  * The iteration will stop at the first match, beginning at the beginning of
+@@ -133,6 +144,7 @@ static Key keys[] = {
+ 	{ MODKEY,                GDK_KEY_g,      spawn,      SETPROP("_SURF_URI", "_SURF_GO", PROMPT_GO) },
+ 	{ MODKEY,                GDK_KEY_f,      spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
+ 	{ MODKEY,                GDK_KEY_slash,  spawn,      SETPROP("_SURF_FIND", "_SURF_FIND", PROMPT_FIND) },
++	{ MODKEY,                GDK_KEY_m,      spawn,      BM_ADD("_SURF_URI") },
+ 
+ 	{ 0,                     GDK_KEY_Escape, stop,       { 0 } },
+ 	{ MODKEY,                GDK_KEY_c,      stop,       { 0 } },
+-- 
+2.35.1
+
