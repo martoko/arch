@@ -1,20 +1,18 @@
 pkgname=dwm
-pkgver=6.3
+pkgver=6.3.r5.594f99a
 pkgrel=1
 pkgdesc='A dynamic window manager for X'
-url='http://dwm.suckless.org'
+url='https://dwm.suckless.org'
 arch=('i686' 'x86_64')
 license=('MIT')
 depends=('libx11' 'libxinerama' 'libxft')
 makedepends=('git')
-source=("$pkgname::git+https://git.suckless.org/$pkgname#tag=$pkgver"
-        'config.h')
-sha256sums=('SKIP'
-            'SKIP')
+source=("$pkgname::git+https://github.com/martoko/$pkgname.git")
+sha256sums=('SKIP')
 
-prepare() {
+pkgver() {
   cd "$srcdir/$pkgname"
-  cp "$srcdir/config.h" config.h
+  git describe --long --tags | sed 's/\([^-]*-\)g/r\1/;s/-/./g'
 }
 
 build() {

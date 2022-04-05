@@ -5,7 +5,7 @@ set -e
 install_source() {
   echo "Installing $1"
   cd packages/$1
-  makepkg --syncdeps --force --install --noconfirm
+  makepkg --syncdeps --install --needed --noconfirm
   cd ../..
 }
 
