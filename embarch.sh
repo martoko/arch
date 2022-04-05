@@ -24,3 +24,4 @@ sudo ln -sfT dash /usr/bin/sh
 install_source dwm
 install_source st
 install_source surf
+install_source mpv
